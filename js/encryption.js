@@ -1,0 +1,3 @@
+async function key(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',hash:'SHA-256',salt,iterations:600000},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+export async function encrypt(buf,pw){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));return{salt,iv,ct:await crypto.subtle.encrypt({name:'AES-GCM',iv},await key(pw,salt),buf)}}
+export async function decrypt(o,pw){return crypto.subtle.decrypt({name:'AES-GCM',iv:o.iv},await key(pw,o.salt),o.ct)}
