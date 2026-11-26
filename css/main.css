@@ -46,3 +46,8 @@ nav .logo{width:34px;height:34px}nav button .i .ic{width:24px;height:24px}.ib .i
 .ct{--tc:#22b8cf}.ca{--tc:#f5b73b}.cp{--tc:#8b7cf6}.cr{--tc:#f2575d}.cb{--tc:#5b8def}.cg{--tc:#34d399}
 .row .ic{width:1em;height:1em}
 .av{color:var(--fg)}
+
+.pscroll{overflow:auto;max-height:75vh;background:#1b2233;padding:6px;border-radius:10px;margin-bottom:12px}.pwrap{position:relative;display:inline-block}.pwrap canvas{display:block;background:#fff}.ovl{position:absolute;left:0;top:0}
+.thumbs{display:flex;gap:6px;overflow:auto;margin-top:8px}.thumb{height:90px;width:auto;border:1px solid var(--bd);cursor:pointer;background:#fff}
+.tb{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:6px 0}.tb input[type=search]{flex:1;min-width:140px}.pn{width:56px!important;text-align:center}.hid{position:fixed;width:0;height:0;border:0}
+input[type=file]{color:var(--fg);max-width:100%}
