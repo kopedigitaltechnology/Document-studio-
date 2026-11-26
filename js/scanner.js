@@ -17,7 +17,7 @@ export function render(root){
  const pdf=async()=>{if(!pages.length){alert('Belum ada halaman.');return null}const it=[];for(const p of pages){const cv=proc(p.bmp,p);it.push({jpeg:new Uint8Array(await(await blobOf(cv,'image/jpeg',.85)).arrayBuffer()),iw:cv.width,ih:cv.height})}return makePdf(it)};
  const nm=()=>'scan-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.pdf';
  const draw=()=>{box.replaceChildren();list.replaceChildren();ctl.replaceChildren();
-  pages.forEach((p,i)=>list.append(el('div',{class:'row'},(i===sel?'▶ ':'')+'Halaman '+(i+1),el('span',{},
+  pages.forEach((p,i)=>list.append(el('div',{class:'row'},(i===sel?'• ':'')+'Halaman '+(i+1),el('span',{},
    el('button',{class:'sec',onclick:()=>{sel=i;draw()}},'Pilih'),
    el('button',{class:'sec',onclick:()=>{if(i>0){[pages[i-1],pages[i]]=[pages[i],pages[i-1]];sel=i-1;draw()}}},'↑'),
    el('button',{class:'sec',onclick:()=>{if(i<pages.length-1){[pages[i+1],pages[i]]=[pages[i],pages[i+1]];sel=i+1;draw()}}},'↓'),

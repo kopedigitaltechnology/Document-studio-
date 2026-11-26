@@ -6,7 +6,7 @@ import * as bio from './biometric.js';
 export function render(root){
  const sel=(k,opts)=>el('select',{onchange:async e=>{state[k]=e.target.value;await save()}},...opts.map(([v,t])=>{const o=el('option',{value:v},t);if(state[k]==v)o.selected=true;return o}));
  root.append(el('h2',{},'Pengaturan'),el('div',{class:'card'},el('b',{},'Tampilan'),el('p',{},'Tema'),sel('theme',[['system','Sistem'],['light','Terang'],['dark','Gelap']]),
-  el('p',{},'Warna aksen'),el('input',{type:'color',value:state.accent,onchange:async e=>{state.accent=e.target.value;await save()}}),
+  el('p',{},'Tata letak (otomatis mengikuti ukuran layar)'),sel('layout',[['auto','Otomatis'],['desktop','Desktop'],['mobile','HP']]),el('p',{},'Warna aksen'),el('input',{type:'color',value:state.accent,onchange:async e=>{state.accent=e.target.value;await save()}}),
   el('p',{},'Ukuran huruf'),el('input',{type:'range',min:14,max:22,value:state.font,onchange:async e=>{state.font=+e.target.value;await save()}})),
  el('div',{class:'card'},el('b',{},'Umum'),el('p',{},el('label',{},el('input',{type:'checkbox',...(state.confirmDelete?{checked:''}:{}),onchange:async e=>{state.confirmDelete=e.target.checked;await save()}}),' Konfirmasi sebelum hapus'))),
  el('div',{class:'card'},el('b',{},'Keamanan'),el('p',{class:'meta'},state.pin?'Kunci PIN aktif (PBKDF2-SHA256, salt acak).':'Kunci aplikasi belum aktif.'),

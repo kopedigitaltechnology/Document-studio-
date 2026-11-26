@@ -1,8 +1,20 @@
-import {el,fmtSize} from './helpers.js';
+import {el,fmtSize,fmtDate} from './helpers.js';
 import {allFiles} from './database.js';
-export async function render(root){const fs=await allFiles();const est=navigator.storage?.estimate?await navigator.storage.estimate():{};
- const stat=(t,v)=>el('div',{class:'card'},el('div',{class:'meta'},t),el('h2',{},String(v)));
- root.append(el('h2',{},'Beranda'),el('div',{class:'grid'},stat('Total berkas',fs.length),stat('Berbintang',fs.filter(f=>f.star).length),stat('Terkunci',fs.filter(f=>f.locked).length),stat('Penyimpanan lokal',fmtSize(est.usage||0))),
- el('div',{class:'card'},el('b',{},'Aksi cepat'),el('p',{},el('button',{onclick:()=>location.hash='#files'},'Impor / Kelola Berkas')),
- el('p',{},el('button',{class:'sec',onclick:()=>{location.hash='#scan'}},'Scan'),el('button',{class:'sec',onclick:()=>{location.hash='#convert'}},'Konversi'),el('button',{class:'sec',onclick:()=>{location.hash='#sign'}},'Tanda Tangan')),el('p',{class:'meta'},'PDF tools (gabung/pisah), editor PDF, dan OCR butuh library di folder libraries/.')),
- el('div',{class:'card'},el('b',{},'Terbaru'),...fs.sort((a,b)=>b.added-a.added).slice(0,5).map(f=>el('div',{class:'row'},f.name))))}
+import {state} from './state.js';
+import {icon} from './icons.js';
+const TOOLS=[['scan','Pindai Dokumen','scan','ct'],['convert','Konversi Format','convert','ca'],['pen','Tanda Tangan','sign','cp'],['folder','Kelola Berkas','files','cb'],['edit','Edit PDF',0,'ca'],['link','Gabung PDF',0,'cp'],['scissors','Potong PDF',0,'cr'],['compress','Kompres PDF',0,'cr'],['ocr','Gambar ke Teks (OCR)',0,'ct'],['pages','Atur Halaman',0,'cb']];
+const ico=t=>t==='application/pdf'?['pdf','cr']:t.startsWith('image/')?['image','cg']:['file','cb'];
+export async function render(root){
+ const fs=(await allFiles()).sort((a,b)=>b.added-a.added);const est=navigator.storage?.estimate?await navigator.storage.estimate():{};
+ const q=el('input',{type:'search',placeholder:'Cari dokumen, alat, atau aktivitas…',oninput:()=>draw()});
+ const tiles=el('div',{class:'grid tiles'}),docs=el('div');
+ const fill=el('div',{class:'fill'});fill.style.width=(est.quota?Math.max(1,Math.min(100,est.usage/est.quota*100)):0)+'%';
+ const draw=()=>{const s=q.value.toLowerCase();
+  tiles.replaceChildren(...TOOLS.filter(t=>t[1].toLowerCase().includes(s)).map(([i,l,r,c])=>{const b=el('button',{class:'tile'+(r?'':' off'),...(r?{onclick:()=>{location.hash='#'+r}}:{disabled:''})},el('span',{class:'ti '+c},icon(i)),el('span',{},l));if(!r)b.append(el('small',{},'Segera'));return b}));
+  const m=fs.filter(f=>f.name.toLowerCase().includes(s)).slice(0,8);
+  docs.replaceChildren(...(m.length?m.map(f=>el('div',{class:'doc'},el('span',{class:'di '+ico(f.type)[1]},icon(ico(f.type)[0])),el('div',{},el('b',{},f.locked?icon('lock'):'',' '+f.name),el('div',{class:'meta'},fmtSize(f.size)+' · '+fmtDate(f.added))))):[el('p',{class:'meta'},fs.length?'Tidak ada hasil.':'Belum ada dokumen. Impor atau pindai dulu.')]))};
+ root.append(q,el('h2',{},'Selamat Datang di Document Studio'),el('p',{class:'meta'},'Data Anda, Privasi Anda. Dokumen diproses 100% lokal.'),
+  el('div',{class:'bar'},fill),el('p',{class:'meta'},'Penyimpanan: '+fmtSize(est.usage||0)+' / '+(est.quota?fmtSize(est.quota):'?')+' (IndexedDB)'),
+  el('div',{class:'card'},el('b',{},'Aksi Cepat'),tiles),
+  el('div',{class:'two'},el('div',{class:'card'},el('b',{},'Dokumen Terbaru'),docs),
+   el('div',{class:'card'},el('b',{},'Status Keamanan & Sistem'),...[['PBKDF2-SHA256 (hash PIN)',1],['AES-256-GCM (enkripsi berkas)',1],['Kunci PIN',!!state.pin],['Biometrik',!!state.bio]].map(([t,on])=>el('div',{class:'row'},t,el('span',{class:on?'ok':'meta'},on?'Aktif':'Nonaktif'))))));draw()}

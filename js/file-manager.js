@@ -1,6 +1,7 @@
 import {el,fmtSize,fmtDate,uid} from './helpers.js';
 import {allFiles,putFile,delFile} from './database.js';
 import {state} from './state.js';
+import {icon} from './icons.js';
 import {encrypt,decrypt} from './encryption.js';
 const OK=['application/pdf','image/jpeg','image/png','image/webp','text/plain'],MAX=50*1048576;
 export async function importFiles(list){const bad=[];for(const f of list){if(!OK.includes(f.type)||f.size>MAX){bad.push(f.name);continue}await putFile({id:uid(),name:f.name.replace(/[\\/]/g,'_'),type:f.type,size:f.size,added:Date.now(),star:false,locked:false,data:await f.arrayBuffer()})}return{bad}}
@@ -15,8 +16,8 @@ export async function render(root){let q='',sort='added';const list=el('div');
   fs.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);list.replaceChildren();
   if(!fs.length)list.append(el('p',{class:'meta'},'Belum ada berkas. Impor PDF, gambar, atau teks.'));
   for(const f of fs){const act=async fn=>{await fn();draw()};
-   list.append(el('div',{class:'row'},el('div',{},el('b',{},(f.star?'★ ':'')+(f.locked?'🔒 ':'')+f.name),el('div',{class:'meta'},fmtSize(f.size)+' · '+fmtDate(f.added))),
-    el('div',{},el('button',{class:'sec',onclick:()=>act(async()=>{f.star=!f.star;await putFile(f)})},'★'),el('button',{class:'sec',onclick:()=>view(f)},'Lihat'),el('button',{class:'sec',onclick:()=>download(f)},'Unduh'),
+   list.append(el('div',{class:'row'},el('div',{},el('b',{},f.star?icon('star'):'',f.locked?icon('lock'):'',' '+f.name),el('div',{class:'meta'},fmtSize(f.size)+' · '+fmtDate(f.added))),
+    el('div',{},el('button',{class:'sec',onclick:()=>act(async()=>{f.star=!f.star;await putFile(f)})},icon('star')),el('button',{class:'sec',onclick:()=>view(f)},'Lihat'),el('button',{class:'sec',onclick:()=>download(f)},'Unduh'),
     el('button',{class:'sec',onclick:()=>act(()=>f.locked?unlock(f):lock(f))},f.locked?'Buka kunci':'Kunci'),
     el('button',{class:'danger',onclick:()=>act(async()=>{if(!state.confirmDelete||confirm('Hapus '+f.name+'?'))await delFile(f.id)})},'Hapus'))))}};
  const inp=el('input',{type:'file',multiple:'',accept:'application/pdf,image/jpeg,image/png,image/webp,text/plain',onchange:async e=>{const r=await importFiles([...e.target.files]);if(r.bad.length)alert('Ditolak (tipe tidak didukung / >50 MB): '+r.bad.join(', '));draw()}});
