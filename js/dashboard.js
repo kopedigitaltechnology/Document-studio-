@@ -2,7 +2,7 @@ import {el,fmtSize,fmtDate} from './helpers.js';
 import {allFiles} from './database.js';
 import {state} from './state.js';
 import {icon} from './icons.js';
-const TOOLS=[['scan','Pindai Dokumen','scan','ct'],['convert','Konversi Format','convert','ca'],['pen','Tanda Tangan','sign','cp'],['folder','Kelola Berkas','files','cb'],['edit','Edit PDF',0,'ca'],['link','Gabung PDF',0,'cp'],['scissors','Potong PDF',0,'cr'],['compress','Kompres PDF',0,'cr'],['ocr','Gambar ke Teks (OCR)',0,'ct'],['pages','Atur Halaman',0,'cb']];
+const TOOLS=[['scan','Pindai Dokumen','scan','ct'],['edit','Edit PDF','pdf','ca'],['link','Gabung PDF','merge','cp'],['scissors','Potong PDF','split','cr'],['compress','Kompres PDF','compress','cr'],['pen','Tanda Tangan','sign','cp'],['ocr','Gambar ke Teks (OCR)',0,'ct'],['pages','Atur Halaman','pages','cb'],['convert','Konversi Format','convert','ca'],['folder','Kelola Berkas','files','cb']];
 const ico=t=>t==='application/pdf'?['pdf','cr']:t.startsWith('image/')?['image','cg']:['file','cb'];
 export async function render(root){
  const fs=(await allFiles()).sort((a,b)=>b.added-a.added);const est=navigator.storage?.estimate?await navigator.storage.estimate():{};
@@ -17,4 +17,4 @@ export async function render(root){
   el('div',{class:'bar'},fill),el('p',{class:'meta'},'Penyimpanan: '+fmtSize(est.usage||0)+' / '+(est.quota?fmtSize(est.quota):'?')+' (IndexedDB)'),
   el('div',{class:'card'},el('b',{},'Aksi Cepat'),tiles),
   el('div',{class:'two'},el('div',{class:'card'},el('b',{},'Dokumen Terbaru'),docs),
-   el('div',{class:'card'},el('b',{},'Status Keamanan & Sistem'),...[['PBKDF2-SHA256 (hash PIN)',1],['AES-256-GCM (enkripsi berkas)',1],['Kunci PIN',!!state.pin],['Biometrik',!!state.bio]].map(([t,on])=>el('div',{class:'row'},t,el('span',{class:on?'ok':'meta'},on?'Aktif':'Nonaktif'))))));draw()}
+   el('div',{class:'card'},el('b',{},'Status Keamanan & Sistem'),...[['PBKDF2-SHA256 (hash PIN)',1],['pdf-lib + pdf.js (PDF lokal)',1],['AES-256-GCM (enkripsi berkas)',1],['Kunci PIN',!!state.pin],['Biometrik',!!state.bio]].map(([t,on])=>el('div',{class:'row'},t,el('span',{class:on?'ok':'meta'},on?'Aktif':'Nonaktif'))))));draw()}
