@@ -1,7 +1,6 @@
-# Document Studio v0.3
+# Document Studio v0.6
 Jalankan lewat server statis (Cloudflare Pages / GitHub Pages). ES Modules butuh http(s), bukan file://.
-Fitur: Dashboard, File Manager (+kunci AES-256-GCM), PIN (PBKDF2) + biometrik WebAuthn, Scanner kamera, Viewer & Editor PDF (anotasi),
-Alat PDF (gabung, pisah, ambil/hapus/putar/atur/duplikat halaman, halaman kosong, metadata, watermark, nomor/header/footer, kompres, flatten, perbaiki, bandingkan),
-Konversi (JPG/PNG, gambar/TXT ke PDF, PDF ke PNG/JPG/TXT), Tanda tangan visual.
-Belum: OCR (butuh Tesseract.js), proteksi kata sandi PDF, DOCX/HTML ke PDF, login Firebase.
+Fitur: Dashboard, Dokumen, Pindai (kamera live, warna asli, deteksi teks, **koreksi perspektif**, **OCR**), Viewer & Editor PDF, Alat PDF (17 alat termasuk **Kunci PDF (AES-256)**, **Buka kunci PDF**, **OCR PDF**), Teks ke PDF, Konversi (10 jenis), Tanda tangan, Profil, Pengaturan.
+Belum: login Firebase.
+OCR butuh berkas Tesseract.js di libraries/ (lihat libraries/README.md). Tanpa berkas itu, tombol OCR menampilkan pesan petunjuk.
 Library: lihat libraries/README.md
